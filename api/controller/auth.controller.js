@@ -89,7 +89,7 @@ export const google = async (req , res , next)=>{
                 username: name.toLowerCase().split(' ').join('') + Math.random().toString(9).slice(-4),
                 email,
                 password:hashedPassword,
-                profliePicture: googlePhotoUrl,
+                profilePicture: googlePhotoUrl,
             });
             await newUser.save();
             const token = jwt.sign({id: user._id} , process.env.JWT_SECRET);
