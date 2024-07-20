@@ -17,22 +17,26 @@ export default function DashSideBar() {
     } , [location.search] );
   
   return (
-    
-    <Sidebar className='w-full md:w-56'>
-        <Sidebar.Items>
-            <Sidebar.ItemGroup>
-                <Link to='/dashboard?tab=profile'>
-                    <Sidebar.Item label={'User'} active={tab === 'profile'} icon={HiUser} labelColor='dark'>
-                    Profile
-                    </Sidebar.Item>
-                </Link>
-                
-                <Sidebar.Item className='curson-pointer'  icon={HiArrowSmRight} >
-                Sign out
-                </Sidebar.Item>
-                
-            </Sidebar.ItemGroup>
-        </Sidebar.Items>
+    <Sidebar className="w-full md:w-56">
+      <Sidebar.Items>
+        <Sidebar.ItemGroup>
+          <Link to="/dashboard?tab=profile">
+            <Sidebar.Item
+              label={"User"}
+              active={tab === "profile"}
+              icon={HiUser}
+              labelColor="dark"
+              as = 'div'
+            >
+              Profile
+            </Sidebar.Item>
+          </Link>
+
+          <Sidebar.Item className="curson-pointer" icon={HiArrowSmRight}>
+            Sign out
+          </Sidebar.Item>
+        </Sidebar.ItemGroup>
+      </Sidebar.Items>
     </Sidebar>
-  )
+  );
 }
