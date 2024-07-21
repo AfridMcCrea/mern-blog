@@ -1,14 +1,15 @@
-import { Alert, Button, FileInput, TextInput } from "flowbite-react";
+import { Alert, Button, FileInput, Modal, TextInput } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase.js";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { updateStart, updateSuccess, updateFailure } from "../redux/user/userSlice.js";
+import { updateStart, updateSuccess, updateFailure , deleteUserStart , deleteUserSuccess , deleteUserFailure } from "../redux/user/userSlice.js";
+import {HiOutlineExclamationCircle} from 'react-icons/hi';
 
 export default function DashProfile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser , error} = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadingProgress, setImageFileUploadingProgress] = useState(null);
@@ -17,6 +18,7 @@ export default function DashProfile() {
   const [updateUserSuccess , setUpdateUserSucces] = useState(null);
   const [updateUserError , setUpdateUserError] = useState(null);
   const [formData, setFormData] = useState({});
+  const [showModel , setShowModel] = useState(false);
   const filePickerRef = useRef();
   const dispatch = useDispatch();
 
@@ -26,6 +28,29 @@ export default function DashProfile() {
       setImageFile(file);
       setImageFileUrl(URL.createObjectURL(file));
     }
+  };
+  const handleDelete = async (e)=>{
+        setShowModel(false);
+        try {
+          dispatch(deleteUserStart());
+          const res = await fetch(`api/user/delete/${currentUser._id}` , {
+            method: 'DELETE',
+
+          });
+          const data = await res.json();
+          if(!res.ok){
+            dispatch(deleteUserFailure(error.message));
+          }
+          else{
+            dispatch(deleteUserSuccess(data));
+          }
+
+          
+        } catch (error) {
+          
+          dispatch(deleteUserFailure(error.message));
+        }
+
   };
 
   useEffect(() => {
@@ -177,11 +202,25 @@ export default function DashProfile() {
         </Button>
       </form>
       <div className="text-red-500 flex justify-between mt-3">
-        <span className="cursor-pointer">Delete Acount</span>
+        <span onClick={()=> setShowModel(true)} className="cursor-pointer">Delete Acount</span>
         <span className="cursor-pointer">Sign Out</span>
       </div>
       { updateUserSuccess && <Alert color='success' className="mt-5">{updateUserSuccess}</Alert>}
       { updateUserError && <Alert color='failure' className="mt-5">{updateUserError}</Alert>}
+      { error && <Alert color='failure' className="mt-5">{error}</Alert>}
+      <Modal show={showModel} onClose={()=> setShowModel(false)} popup size = 'md'>
+          <Modal.Header/>
+          <Modal.Body>
+            <div className="text-center">
+              <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto"/>
+              <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">Are you sure you want to delete your account ?</h3>
+              <div className="flex justify-center gap-3">
+                <Button onClick={handleDelete} color='failure'>Yes I'm sure.</Button>
+                <Button color='gray' onClick={()=> setShowModel(false)}>No, cancel.</Button>
+              </div>
+            </div>
+          </Modal.Body>
+      </Modal>
     </div>
   );
 }
