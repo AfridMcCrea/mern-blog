@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import CreatePage from './pages/CreatePage';
 import OnlyPrivateRoute from './components/OnlyPrivateRoute';
+import UpdatePost from './pages/UpdatePost';
 
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
         </Route>
         <Route element={<OnlyPrivateRoute/>}>
         <Route path='/create-post' element={<CreatePage/>}/>
+        <Route path='/update-post/:postId' element={<UpdatePost/>}/>
         </Route>
         <Route path='/projects' element={<Projects/>}/>
         <Route path='/sign-in' element={<SignIn/>}/>
